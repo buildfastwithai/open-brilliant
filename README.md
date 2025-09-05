@@ -203,19 +203,6 @@ function draw() {
 }
 ```
 
-## E2B Code Interpreter Role
-
-**Current Status**: E2B is imported in the API route but **not actively used** in the current implementation.
-
-**Intended Purpose**: 
-- **Code Validation**: Test generated HTML/JavaScript code before serving to users
-- **Sandbox Execution**: Run physics simulations in a secure environment
-- **Error Detection**: Catch syntax errors or runtime issues in generated code
-
-**Why Not Used**:
-- Generated code runs directly in browser iframes (sufficient for this use case)
-- Browser iframe sandboxing provides adequate security
-- E2B adds complexity and API costs without significant benefit for HTML/CSS/JS validation
 
 **Future Potential**: Could be used for more complex physics simulations requiring server-side computation or Python-based physics libraries.
 
