@@ -61,7 +61,7 @@ export default function PhysicsQuestionForm({ onSubmit, loading }: PhysicsQuesti
             id="question"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            placeholder="e.g., Show me projectile motion with adjustable parameters..."
+            placeholder="Describe your physics scenario here, e.g., 'A ball dropped from 30m, show free fall' or 'Two cars meeting, one accelerating.'"
             className="w-full p-4 border-2 border-black rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-400"
             rows={3}
             disabled={loading}
@@ -97,21 +97,24 @@ export default function PhysicsQuestionForm({ onSubmit, loading }: PhysicsQuesti
       </form>
 
       {/* Sample Questions */}
-      <div className="mt-6">
-        <p className="text-sm font-medium mb-3">Try these sample questions:</p>
-        <div className="max-h-40 overflow-y-auto flex flex-col gap-2 pr-1">
-          {sampleQuestions.map((sample, index) => (
-            <button
-              key={index}
-              onClick={() => handleSampleClick(sample)}
-              className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-left w-full"
-              style={{ whiteSpace: 'normal' }}
-            >
-              {sample}
-            </button>
-          ))}
+      {!loading && (
+        <div className="mt-6">
+          <p className="text-sm font-medium mb-3">Try these sample questions:</p>
+          <div className="max-h-40 overflow-y-auto flex flex-col gap-2 pr-1">
+            {sampleQuestions.map((sample, index) => (
+              <button
+                key={index}
+                onClick={() => handleSampleClick(sample)}
+                className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-left w-full"
+                style={{ whiteSpace: 'normal' }}
+              >
+                {sample}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+      
     </div>
   );
 }

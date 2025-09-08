@@ -39,7 +39,7 @@ export default function PhysicsResponse({ response }: PhysicsResponseProps) {
           </div>
           <div>
             <h3 className="font-semibold mb-2">Solution:</h3>
-            <p className="text-sm leading-relaxed">{response.solution}</p>
+            <div className="text-sm leading-relaxed whitespace-pre-line">{response.solution}</div>
           </div>
         </div>
       </div>

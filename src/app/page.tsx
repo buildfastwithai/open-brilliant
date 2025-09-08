@@ -6,7 +6,6 @@ import { Loader2 } from 'lucide-react';
 import PhysicsQuestionForm from '@/components/PhysicsQuestionForm';
 import PhysicsResponse from '@/components/PhysicsResponse';
 import TestPhysics from '@/components/TestPhysics';
-import SimpleTest from '@/components/SimpleTest';
 
 interface PhysicsResponse {
   analysis: string;
@@ -104,11 +103,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* Test Components */}
-      <div className="max-w-7xl mx-auto p-6">
-        {/* <SimpleTest /> */}
-      
-      </div>
+     
     </div>
   );
 }
