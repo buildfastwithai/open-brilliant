@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Physics Education App",
-  description: "Interactive physics learning with AI-generated animations",
+  title: "Open Brilliant - AI Physics Animations | Powered by BuildFastWithAI",
+  description: "Interactive physics learning with AI-generated animations. Create custom physics visualizations and learn complex concepts through dynamic simulations.",
 };
 
 export default function RootLayout({

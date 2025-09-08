@@ -3,6 +3,7 @@ import { Sandbox } from '@e2b/code-interpreter'
 import { openai } from '@ai-sdk/openai'
 import { generateText } from 'ai'
 
+
 const SYSTEM_PROMPT = `You are a physics education assistant that creates HIGHLY INTERACTIVE visualizations for physics concepts.
 
 Your task is to:
@@ -384,7 +385,7 @@ export async function POST(request: NextRequest) {
 
     // Generate physics analysis and code using OpenAI
     const { text } = await generateText({
-      model: openai('gpt-4'),
+      model: openai('gpt-4o'),
       system: SYSTEM_PROMPT,
       prompt: `Physics Question: ${question}
 

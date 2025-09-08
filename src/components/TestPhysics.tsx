@@ -27,7 +27,7 @@ export default function TestPhysics() {
   <div class="container">
     <h2>Interactive Projectile Motion Demo</h2>
     <div class="animation-area">
-      <canvas id="canvas" width="800" height="400"></canvas>
+      <canvas id="canvas" width="800" height="400" style="max-width: 100%; height: auto;"></canvas>
     </div>
     <div class="controls">
       <button onclick="playAnimation()">Play</button>
@@ -236,13 +236,13 @@ export default function TestPhysics() {
 </html>`;
 
   return (
-    <div className="p-6 w-full">
-      <h2 className="text-2xl font-bold mb-4">Test Physics Animation</h2>
-      <div className="border-2 border-black rounded-lg w-full">
+    <div className="w-full">
+      {/* <h2 className="text-2xl font-bold mb-4">Interactive Projectile Motion Demo</h2> */}
+      <div className="border-2 border-black rounded-lg w-full overflow-hidden">
         <iframe
           srcDoc={testCode}
           className="w-full"
-          style={{ width: '800px', height: '600px' }}
+          style={{ width: '100%', height: '500px', minHeight: '400px' }}
           title="Test Physics Animation"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

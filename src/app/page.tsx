@@ -2,10 +2,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import LandingPage from '@/components/LandingPage';
 import PhysicsQuestionForm from '@/components/PhysicsQuestionForm';
 import PhysicsResponse from '@/components/PhysicsResponse';
-import TestPhysics from '@/components/TestPhysics';
 
 interface PhysicsResponse {
   analysis: string;
@@ -18,7 +20,8 @@ export default function Home() {
   const [response, setResponse] = useState<PhysicsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showTestPhysics, setShowTestPhysics] = useState(false);
+  const [showCreator, setShowCreator] = useState(false);
+
   const handleSubmit = async (question: string) => {
     setLoading(true);
     setError('');
@@ -47,40 +50,54 @@ export default function Home() {
     }
   };
 
+  const handleStartCreating = () => {
+    setShowCreator(true);
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBackToLanding = () => {
+    setShowCreator(false);
+    setResponse(null);
+    setError('');
+    setLoading(false);
+  };
+
+  if (!showCreator) {
+    return (
+      <div className="min-h-screen bg-white text-black">
+        <Header />
+        <LandingPage onStartCreating={handleStartCreating} />
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* Header */}
-      <header className="border-b-2 border-black p-6 flex items-center justify-between max-w-7xl mx-auto">
-        <div>
-          <h1 className="text-3xl font-bold">Open Brilliant</h1>
-          <p className="text-gray-600 mt-2">Interactive physics learning with AI-generated animations</p>
-        </div>
-        <div>
-          <button
-            onClick={() => setShowTestPhysics(true)}
-            className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
-          >
-            See Animation
-          </button>
-          {showTestPhysics && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-              <div className="relative bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full">
-                <button
-                  onClick={() => setShowTestPhysics(false)}
-                  className="absolute top-2 right-2 text-black hover:text-red-600 text-2xl font-bold"
-                  aria-label="Close"
-                >
-                  &times;
-                </button>
-                <TestPhysics />
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
-      {/* Main Content */}
+      <Header />
+      
+      {/* Creator Section */}
       <main className="max-w-7xl mx-auto p-6">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleBackToLanding}
+            className="flex items-center gap-2 px-4 py-2 border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </button>
+        </div>
+
+        {/* Creator Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold mb-4">Create Your Physics Animation</h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Describe any physics scenario and watch AI generate an interactive animation with real-time calculations
+          </p>
+        </div>
+
         {/* Question Input */}
         <PhysicsQuestionForm onSubmit={handleSubmit} loading={loading} />
 
@@ -103,7 +120,7 @@ export default function Home() {
         )}
       </main>
 
-     
+      <Footer />
     </div>
   );
 }
