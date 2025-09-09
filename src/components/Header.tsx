@@ -20,12 +20,12 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
-            <a 
+            {/* <a 
               href="#features" 
               className="text-black hover:text-gray-600 transition-colors"
             >
               Features
-            </a>
+            </a> */}
             {/* <a 
               href="#demo" 
               className="text-black hover:text-gray-600 transition-colors"
@@ -38,7 +38,7 @@ export default function Header() {
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-black hover:text-gray-600 transition-colors"
             >
-              BuildFastWithAI
+              Build Fast With AI
               <ExternalLink className="w-3 h-3" />
             </a>
           </nav>

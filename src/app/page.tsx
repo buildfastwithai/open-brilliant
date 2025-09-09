@@ -66,9 +66,9 @@ export default function Home() {
   if (!showCreator) {
     return (
       <div className="min-h-screen bg-white text-black">
-        <Header />
+        {/* <Header /> */}
         <LandingPage onStartCreating={handleStartCreating} />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     );
   }
