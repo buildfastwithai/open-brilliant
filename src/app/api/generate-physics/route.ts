@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Sandbox } from '@e2b/code-interpreter'
-import { openai } from '@ai-sdk/openai'
+
+import { cerebras } from '@ai-sdk/cerebras'
 import { generateText } from 'ai'
 
 
@@ -367,10 +367,11 @@ For each physics concept, you MUST:
 11. Include proper cleanup and reset functionality
 12. Keep UI elements (buttons, sliders, text) in black/white theme while using colors only for animated objects
 
-Return your response as JSON with this structure:
+CRITICAL: You MUST return ONLY valid JSON in this exact format. Do not include any markdown code blocks, explanations, or extra text. Return ONLY the JSON object:
+
 {
   "analysis": "Physics concept analysis and explanation",
-  "solution": "Step-by-step solution",
+  "solution": "Step-by-step solution", 
   "code": "Complete HTML code with interactive parameter controls",
   "concepts": ["list", "of", "physics", "concepts"]
 }`;
@@ -383,22 +384,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Question is required' }, { status: 400 });
     }
 
-    // Generate physics analysis and code using OpenAI
+    // Generate physics analysis and code using Cerebras
     const { text } = await generateText({
-      model: openai('gpt-4o'),
+      model: cerebras('llama-3.3-70b'),
       system: SYSTEM_PROMPT,
       prompt: `Physics Question: ${question}
 
 Please analyze this physics question and generate an interactive visualization. Focus on making the physics concepts clear and engaging through animation.
 
-CRITICAL: The generated code MUST include a working, visible animation in the canvas area. Do not just create controls and parameters - the animation must actually move and be visible when the play button is pressed. Include proper canvas drawing code that creates moving elements based on the physics concept.`,
-      temperature: 0.7,
+CRITICAL: The generated code MUST include a working, visible animation in the canvas area. Do not just create controls and parameters - the animation must actually move and be visible when the play button is pressed. Include proper canvas drawing code that creates moving elements based on the physics concept.
+
+IMPORTANT: Return ONLY valid JSON. Do not include any markdown formatting, code blocks, or extra text. Just the JSON object.`,
+      temperature: 0.1,
     });
 
     let result;
     try {
-      result = JSON.parse(text);
+      // Clean the text to extract JSON
+      let cleanText = text.trim();
+      
+      // Remove markdown code blocks if present
+      if (cleanText.startsWith('```json')) {
+        cleanText = cleanText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (cleanText.startsWith('```')) {
+        cleanText = cleanText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      }
+      
+      // Find JSON object in the text
+      const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        cleanText = jsonMatch[0];
+      }
+      
+      result = JSON.parse(cleanText);
     } catch (parseError) {
+      console.error('JSON parsing failed:', parseError);
+      console.error('Raw text:', text);
+      
       // If JSON parsing fails, create a structured response
       result = {
         analysis: text,

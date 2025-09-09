@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Play, ArrowRight, ExternalLink, Zap, Orbit, Atom, Grid3X3, Waves, Binary, Cpu, Calculator, Activity } from 'lucide-react';
+import { Play, ArrowRight, ExternalLink, Zap, Orbit, Atom, Calculator, Activity } from 'lucide-react';
 import TestPhysics from './TestPhysics';
 
 export default function LandingPage({ onStartCreating }: { onStartCreating: () => void }) {

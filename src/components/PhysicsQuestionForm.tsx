@@ -27,8 +27,7 @@ const sampleQuestions = [
     "Simulate light ray passing through a convex lens. Adjust focal length and object distance to see image formation",
     "Animate refraction of light at water–air boundary with adjustable angle of incidence",
   
-    // FLUID MECHANICS
-    "Show buoyant force on an object floating/sinking in water. Let me change density of object and fluid"
+ 
   ];
 
 

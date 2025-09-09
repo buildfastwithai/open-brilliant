@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/cerebras": "^1.0.15",
     "@ai-sdk/openai": "^2.0.24",
     "@e2b/code-interpreter": "^2.0.0",
     "ai": "^5.0.33",
