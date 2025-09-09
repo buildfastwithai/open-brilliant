@@ -1,6 +1,6 @@
 'use client';
 
-import { ExternalLink, Github, Twitter, Mail } from 'lucide-react';
+import { ExternalLink,  Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -22,7 +22,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-white hover:text-gray-300 transition-colors font-semibold"
               >
-                BuildFastWithAI
+                Build Fast With AI
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>
@@ -61,7 +61,7 @@ export default function Footer() {
                 className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
-                BuildFastWithAI
+                Build Fast With AI
               </a>
              
                 <Mail className="w-4 h-4" />
@@ -81,7 +81,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-white hover:text-gray-300 transition-colors"
             >
-              BuildFastWithAI
+              Build Fast With AI
             </a>
           </p>
         </div>
