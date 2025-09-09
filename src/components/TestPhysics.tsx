@@ -9,18 +9,139 @@ export default function TestPhysics() {
   body { background: white; color: black; font-family: Arial; margin: 0; padding: 20px; }
   .container { max-width: 1200px; margin: 0 auto; }
   .animation-area { border: 2px solid black; margin: 20px 0; position: relative; }
-  .controls { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
-  .controls button { padding: 8px 16px; border: 1px solid black; background: white; cursor: pointer; }
-  .controls button:hover { background: black; color: white; }
-  .parameter-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0; }
-  .parameter-group { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
-  .parameter-group label { display: block; font-weight: bold; margin-bottom: 5px; }
-  .parameter-group input[type="range"] { width: 100%; margin: 5px 0; }
-  .parameter-group input[type="number"] { width: 80px; padding: 3px; border: 1px solid #ccc; }
-  .parameter-value { font-family: monospace; background: #f0f0f0; padding: 2px 5px; }
-  .info-panel { background: #f5f5f5; padding: 15px; border: 1px solid black; }
-  .formula { font-family: monospace; background: #f0f0f0; padding: 5px; margin: 5px 0; border: 1px solid #ccc; }
-  .live-calculations { background: #e8f4f8; padding: 10px; border: 1px solid #4a90e2; margin: 10px 0; }
+  .controls { display: flex; gap: 12px; margin: 15px 0; flex-wrap: wrap; justify-content: center; }
+  .controls button { 
+    padding: 12px 20px; 
+    border: 2px solid #000; 
+    background: #fff; 
+    cursor: pointer; 
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .controls button:hover { 
+    background: #000; 
+    color: #fff; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  .controls button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .parameter-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0; }
+  .parameter-group { 
+    border: 2px solid #e0e0e0; 
+    padding: 20px; 
+    background: #fafafa; 
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  .parameter-group:hover {
+    border-color: #000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .parameter-group label { 
+    display: block; 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    font-size: 16px;
+    color: #333;
+  }
+  .parameter-group input[type="range"] { 
+    width: 100%; 
+    margin: 10px 0; 
+    height: 6px;
+    border-radius: 3px;
+    background: #ddd;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .parameter-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .parameter-group input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #000;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .parameter-group input[type="number"] { 
+    width: 90px; 
+    padding: 8px 12px; 
+    border: 2px solid #ddd; 
+    border-radius: 6px;
+    font-weight: 600;
+    text-align: center;
+    transition: border-color 0.3s ease;
+  }
+  .parameter-group input[type="number"]:focus {
+    border-color: #000;
+    outline: none;
+  }
+  .parameter-value { 
+    font-family: 'Courier New', monospace; 
+    background: #f0f0f0; 
+    padding: 6px 12px; 
+    border-radius: 6px;
+    font-weight: 600;
+    border: 1px solid #ddd;
+    display: inline-block;
+    margin: 5px 0;
+  }
+  .info-panel { 
+    background: #f8f8f8; 
+    padding: 25px; 
+    border: 2px solid #000; 
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .info-panel h3 {
+    margin-top: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+  .formula { 
+    font-family: 'Courier New', monospace; 
+    background: #f0f0f0; 
+    padding: 12px 16px; 
+    margin: 8px 0; 
+    border: 1px solid #ddd; 
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .live-calculations { 
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%); 
+    padding: 20px; 
+    border: 2px solid #000; 
+    margin: 15px 0; 
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .live-calculations h4 {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 15px;
+  }
 </style>
 </head>
 <body>
