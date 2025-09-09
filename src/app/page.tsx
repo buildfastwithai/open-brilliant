@@ -2,12 +2,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import LandingPage from '@/components/LandingPage';
 import PhysicsQuestionForm from '@/components/PhysicsQuestionForm';
 import PhysicsResponse from '@/components/PhysicsResponse';
+import SkeletonLoader from '@/components/SkeletonLoader';
+import SampleQuestionsSection from '@/components/SampleQuestionsSection';
 
 interface PhysicsResponse {
   analysis: string;
@@ -21,6 +23,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showCreator, setShowCreator] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState('');
 
   const handleSubmit = async (question: string) => {
     setLoading(true);
@@ -63,6 +66,12 @@ export default function Home() {
     setLoading(false);
   };
 
+  const handleQuestionSelect = (question: string) => {
+    setSelectedQuestion(question);
+    // Scroll to the form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   if (!showCreator) {
     return (
       <div className="min-h-screen bg-white text-black">
@@ -99,25 +108,33 @@ export default function Home() {
         </div>
 
         {/* Question Input */}
-        <PhysicsQuestionForm onSubmit={handleSubmit} loading={loading} />
+        <PhysicsQuestionForm 
+          onSubmit={handleSubmit} 
+          loading={loading} 
+          showSampleQuestions={!response}
+          selectedQuestion={selectedQuestion}
+          onQuestionChange={setSelectedQuestion}
+        />
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
-            <p className="text-red-800">{error}</p>
+          <div className="mb-6 p-6 bg-red-50 border-2 border-red-200 rounded-xl shadow-lg">
+            <p className="text-red-800 font-medium">{error}</p>
           </div>
         )}
 
         {/* Response Display */}
         {response && <PhysicsResponse response={response} />}
 
-        {/* Loading State */}
-        {loading && (
-          <div className="text-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-            <p>Analyzing physics concepts and generating animation...</p>
+        {/* Sample Questions below animation when response is visible */}
+        {response && (
+          <div className="mt-8">
+            <SampleQuestionsSection onQuestionSelect={handleQuestionSelect} loading={loading} />
           </div>
         )}
+
+        {/* Loading State with Skeleton */}
+        {loading && <SkeletonLoader />}
       </main>
 
       <Footer />

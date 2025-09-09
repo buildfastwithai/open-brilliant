@@ -56,20 +56,7 @@ export default function Header() {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
             <div className="flex flex-col space-y-3">
-              <a 
-                href="#features" 
-                className="text-black hover:text-gray-600 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Features
-              </a>
-              <a 
-                href="#demo" 
-                className="text-black hover:text-gray-600 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Demo
-              </a>
+              
               <a 
                 href="https://buildfastwithai.com" 
                 target="_blank" 

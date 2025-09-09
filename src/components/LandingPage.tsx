@@ -167,6 +167,7 @@ export default function LandingPage({ onStartCreating }: { onStartCreating: () =
                 rel="noopener noreferrer"
                 className="hover:text-gray-300 transition-colors flex items-center gap-1 font-semibold"
               >
+
                 Build Fast With AI
                 <ExternalLink className="w-4 h-4" />
               </a>
@@ -175,7 +176,7 @@ export default function LandingPage({ onStartCreating }: { onStartCreating: () =
 
           {/* Main Title */}
           <div className="mb-8 relative">
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-none tracking-tight">
+            <h1 className=" text-4xl md:text-7xl font-bold mb-4 leading-none tracking-tight">
               <span className="text-white"> Master Physics with</span>
               <br />
               <span className="text-white glow-text-mono animate-glow-mono">AI Animations</span>
@@ -195,7 +196,7 @@ export default function LandingPage({ onStartCreating }: { onStartCreating: () =
             Transform complex physics concepts into{" "}
             <span className="text-white font-normal">interactive visualizations</span>.
             <br />
-            Describe any scenario and let AI bring it to life.
+           <span className="text-white hidden lg:block font-normal">Describe any scenario and let AI bring it to life.</span>
           </p>
 
           {/* Modern Buttons */}
@@ -404,11 +405,11 @@ export default function LandingPage({ onStartCreating }: { onStartCreating: () =
             {/* Modal Header */}
             <div className="flex items-center justify-between px-10 border-b border-white/10 flex-shrink-0 bg-black/50">
               <div>
-                <h3 className="text-4xl font-bold mb-3 flex items-center gap-4 tracking-tight">
+                <h3 className="text-2xl md:text-4xl font-bold mb-3 flex items-center gap-4 tracking-tight">
                   <Atom className="w-10 h-10 text-white" />
                   Physics Animation Demo
                 </h3>
-                <p className="text-gray-400 text-lg font-light">Experience interactive physics visualization</p>
+                <p className="text-gray-400 text-xs md:text-lg font-light">Experience interactive physics visualization</p>
               </div>
               <button
                 onClick={() => setShowDemo(false)}

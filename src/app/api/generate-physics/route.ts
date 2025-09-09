@@ -126,16 +126,25 @@ MANDATORY Layout Structure - NEW WIREFRAME FORMAT:
 <html>
 <head>
 <style>
-  body { background: white; color: black; font-family: Arial; margin: 0; padding: 10px; }
+  body { background: white; color: black; font-family: Arial; margin: 0; padding: 5px; }
   .container { width: 100%; max-width: 100%; margin: 0; }
   
-  /* Main Layout Grid - Top Section (3/4 + 1/4) */
+  /* Main Layout Grid - Responsive (3/4 + 1/4 on desktop, stacked on mobile) */
   .main-layout { 
     display: grid; 
-    grid-template-columns: 3fr 1fr; 
-    gap: 20px; 
-    height: 700px; 
-    margin-bottom: 20px; 
+    grid-template-columns: 1fr; 
+    gap: 15px; 
+    margin-bottom: 15px; 
+  }
+  
+  /* Desktop layout */
+  @media (min-width: 768px) {
+    .main-layout { 
+      grid-template-columns: 3fr 1fr; 
+      gap: 20px; 
+      height: 700px; 
+      margin-bottom: 20px; 
+    }
   }
   
   /* Left Column - Animation Preview and Controls */
@@ -153,28 +162,54 @@ MANDATORY Layout Structure - NEW WIREFRAME FORMAT:
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    min-height: 500px;
+    min-height: 250px;
   }
+  
+  /* Mobile responsive animation area */
+  @media (min-width: 768px) {
+    .animation-area { 
+      min-height: 500px; 
+    }
+  }
+  
   #canvas { width: 100%; height: 100%; display: block; }
   
-  /* Control Buttons */
+  /* Control Buttons - Mobile Responsive */
   .controls { 
     display: flex; 
-    gap: 15px; 
+    gap: 8px; 
     justify-content: center; 
     flex-wrap: wrap; 
-    padding: 10px 0;
+    padding: 8px 0;
   }
+  
+  @media (min-width: 768px) {
+    .controls { 
+      gap: 15px; 
+      padding: 10px 0;
+    }
+  }
+  
   .controls button { 
-    padding: 12px 20px; 
+    padding: 8px 12px; 
     border: 2px solid #000; 
     background: #fff; 
     cursor: pointer; 
     border-radius: 8px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+    min-width: 0;
+  }
+  
+  @media (min-width: 768px) {
+    .controls button { 
+      padding: 12px 20px; 
+      font-size: 14px;
+      flex: none;
+    }
   }
   .controls button:hover { 
     background: #000; 
@@ -187,36 +222,70 @@ MANDATORY Layout Structure - NEW WIREFRAME FORMAT:
   .right-column { 
     display: flex; 
     flex-direction: column; 
-    gap: 20px; 
+    gap: 15px; 
+  }
+  
+  @media (min-width: 768px) {
+    .right-column { 
+      gap: 20px; 
+    }
   }
   
   /* Top Right - Parameter Control Panel */
   .parameter-panel { 
     flex: 1; 
     border: 2px solid #e0e0e0; 
-    padding: 20px; 
+    padding: 15px; 
     background: #fafafa; 
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
+  
+  @media (min-width: 768px) {
+    .parameter-panel { 
+      padding: 20px; 
+    }
+  }
   .parameter-panel h3 {
     margin-top: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #000;
     border-bottom: 2px solid #000;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     text-align: center;
   }
-  .parameter-group { 
-    margin-bottom: 15px; 
+  
+  @media (min-width: 768px) {
+    .parameter-panel h3 {
+      font-size: 18px;
+      padding-bottom: 8px;
+    }
   }
+  
+  .parameter-group { 
+    margin-bottom: 12px; 
+  }
+  
+  @media (min-width: 768px) {
+    .parameter-group { 
+      margin-bottom: 15px; 
+    }
+  }
+  
   .parameter-group label { 
     display: block; 
     font-weight: 600; 
-    margin-bottom: 5px; 
-    font-size: 14px;
+    margin-bottom: 4px; 
+    font-size: 12px;
     color: #333;
+  }
+  
+  @media (min-width: 768px) {
+    .parameter-group label { 
+      margin-bottom: 5px; 
+      font-size: 14px;
+    }
   }
   .parameter-group input[type="range"] { 
     width: 100%; 
@@ -238,72 +307,134 @@ MANDATORY Layout Structure - NEW WIREFRAME FORMAT:
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
   .parameter-group input[type="number"] { 
-    width: 70px; 
-    padding: 6px 8px; 
+    width: 60px; 
+    padding: 4px 6px; 
     border: 2px solid #ddd; 
     border-radius: 4px;
     font-weight: 600;
     text-align: center;
-    font-size: 12px;
+    font-size: 11px;
   }
+  
+  @media (min-width: 768px) {
+    .parameter-group input[type="number"] { 
+      width: 70px; 
+      padding: 6px 8px; 
+      font-size: 12px;
+    }
+  }
+  
   .parameter-value { 
     font-family: 'Courier New', monospace; 
     background: #f0f0f0; 
-    padding: 4px 8px; 
+    padding: 3px 6px; 
     border-radius: 4px;
     font-weight: 600;
     border: 1px solid #ddd;
     display: inline-block;
-    margin: 3px 0;
-    font-size: 12px;
+    margin: 2px 0;
+    font-size: 11px;
+  }
+  
+  @media (min-width: 768px) {
+    .parameter-value { 
+      padding: 4px 8px; 
+      margin: 3px 0;
+      font-size: 12px;
+    }
   }
   
   /* Bottom Right - Physics Information Panel */
   .physics-info-panel { 
     flex: 1; 
     background: #f8f8f8; 
-    padding: 20px; 
+    padding: 15px; 
     border: 2px solid #000; 
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
+  
+  @media (min-width: 768px) {
+    .physics-info-panel { 
+      padding: 20px; 
+    }
+  }
   .physics-info-panel h3 {
     margin-top: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: #000;
     border-bottom: 2px solid #000;
-    padding-bottom: 8px;
+    padding-bottom: 6px;
     text-align: center;
   }
+  
+  @media (min-width: 768px) {
+    .physics-info-panel h3 {
+      font-size: 18px;
+      padding-bottom: 8px;
+    }
+  }
+  
   .physics-data { 
     font-family: 'Courier New', monospace; 
     background: #f0f0f0; 
-    padding: 8px 12px; 
-    margin: 6px 0; 
+    padding: 6px 8px; 
+    margin: 4px 0; 
     border: 1px solid #ddd; 
     border-radius: 6px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: 11px;
+  }
+  
+  @media (min-width: 768px) {
+    .physics-data { 
+      padding: 8px 12px; 
+      margin: 6px 0; 
+      font-size: 12px;
+    }
   }
   .energy-bar {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 8px 0;
+    gap: 6px;
+    margin: 6px 0;
   }
+  
+  @media (min-width: 768px) {
+    .energy-bar {
+      gap: 8px;
+      margin: 8px 0;
+    }
+  }
+  
   .energy-value {
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
-    min-width: 40px;
+    min-width: 30px;
   }
+  
+  @media (min-width: 768px) {
+    .energy-value {
+      font-size: 12px;
+      min-width: 40px;
+    }
+  }
+  
   .energy-progress {
     flex: 1;
-    height: 8px;
+    height: 6px;
     background: #e0e0e0;
     border-radius: 4px;
     overflow: hidden;
   }
+  
+  @media (min-width: 768px) {
+    .energy-progress {
+      height: 8px;
+    }
+  }
+  
   .energy-fill {
     height: 100%;
     border-radius: 4px;
@@ -317,9 +448,16 @@ MANDATORY Layout Structure - NEW WIREFRAME FORMAT:
     background: white;
     border: 2px solid #000;
     border-radius: 12px;
-    padding: 25px;
+    padding: 15px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    margin-top: 30px;
+    margin-top: 20px;
+  }
+  
+  @media (min-width: 768px) {
+    .bottom-section {
+      padding: 25px;
+      margin-top: 30px;
+    }
   }
   .bottom-section h2 {
     margin-top: 0;

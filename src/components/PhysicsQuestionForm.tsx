@@ -1,11 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Play, RotateCcw, Loader2 } from 'lucide-react';
 
 interface PhysicsQuestionFormProps {
   onSubmit: (question: string) => void;
   loading: boolean;
+  showSampleQuestions?: boolean;
+  selectedQuestion?: string;
+  onQuestionChange?: (question: string) => void;
 }
 const sampleQuestions = [
     // MECHANICS
@@ -32,8 +35,13 @@ const sampleQuestions = [
 
 
 
-export default function PhysicsQuestionForm({ onSubmit, loading }: PhysicsQuestionFormProps) {
-  const [question, setQuestion] = useState('');
+export default function PhysicsQuestionForm({ onSubmit, loading, showSampleQuestions = true, selectedQuestion = '', onQuestionChange }: PhysicsQuestionFormProps) {
+  const [question, setQuestion] = useState(selectedQuestion);
+  
+  // Update local state when selectedQuestion prop changes
+  React.useEffect(() => {
+    setQuestion(selectedQuestion);
+  }, [selectedQuestion]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,68 +51,82 @@ export default function PhysicsQuestionForm({ onSubmit, loading }: PhysicsQuesti
 
   const handleSampleClick = (sample: string) => {
     setQuestion(sample);
+    if (onQuestionChange) {
+      onQuestionChange(sample);
+    }
   };
 
   const handleClear = () => {
     setQuestion('');
+    if (onQuestionChange) {
+      onQuestionChange('');
+    }
   };
 
   return (
     <div className="mb-8">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="question" className="block text-sm font-medium mb-2">
-            Ask a Physics Question
-          </label>
-          <textarea
-            id="question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Describe your physics scenario here, e.g., 'A ball dropped from 30m, show free fall' or 'Two cars meeting, one accelerating.'"
-            className="w-full p-4 border-2 border-black rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-gray-400"
-            rows={3}
-            disabled={loading}
-          />
-        </div>
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={loading || !question.trim()}
-            className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4" />
-                Generate Animation
-              </>
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={handleClear}
-            className="flex items-center gap-2 px-6 py-3 border-2 border-black rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <RotateCcw className="w-4 h-4" />
-            Clear
-          </button>
-        </div>
-      </form>
+      {/* Enhanced form container with shadows and modern styling */}
+      <div className="bg-white border-2 border-black rounded-2xl p-4 sm:p-8 shadow-2xl transform transition-all duration-300 hover:shadow-3xl">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div>
+            <label htmlFor="question" className="block text-base sm:text-lg font-bold mb-2 sm:mb-3 text-black">
+              Ask a Physics Question
+            </label>
+            <textarea
+              id="question"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Describe your physics scenario here, e.g., 'A ball dropped from 30m, show free fall' or 'Two cars meeting, one accelerating.'"
+              className="w-full p-4 sm:p-6 border-2 border-black rounded-xl resize-none focus:outline-none focus:ring-4 focus:ring-gray-300 focus:border-black transition-all duration-300 text-base sm:text-lg shadow-inner bg-gray-50"
+              rows={3}
+              disabled={loading}
+            />
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              type="submit"
+              disabled={loading || !question.trim()}
+              className="flex items-center justify-center gap-3 px-6 sm:px-8 py-4 bg-black text-white rounded-xl hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none w-full sm:w-auto"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                  <span className="hidden sm:inline">Generating...</span>
+                  <span className="sm:hidden">Generating</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">Generate Animation</span>
+                  <span className="sm:hidden">Generate</span>
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="flex items-center justify-center gap-3 px-6 sm:px-8 py-4 border-2 border-black rounded-xl hover:bg-black hover:text-white transition-all duration-300 font-bold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 w-full sm:w-auto"
+            >
+              <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
 
-      {/* Sample Questions */}
-      {!loading && (
-        <div className="mt-6">
-          <p className="text-sm font-medium mb-3">Try these sample questions:</p>
-          <div className="max-h-40 overflow-y-auto flex flex-col gap-2 pr-1">
+      {/* Sample Questions - Enhanced styling */}
+      {!loading && showSampleQuestions && (
+        <div className="mt-6 sm:mt-8 bg-white border-2 border-black rounded-2xl p-4 sm:p-6 shadow-2xl">
+          <p className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-black flex items-center gap-2">
+            <div className="w-2 h-2 bg-black rounded-full"></div>
+            Try these sample questions:
+          </p>
+          <div className="max-h-48 sm:max-h-60 overflow-y-auto flex flex-col gap-2 sm:gap-3 pr-1 sm:pr-2">
             {sampleQuestions.map((sample, index) => (
               <button
                 key={index}
                 onClick={() => handleSampleClick(sample)}
-                className="px-3 py-1 text-sm border border-gray-300 rounded-full hover:bg-gray-100 transition-colors text-left w-full"
+                className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border-2 border-gray-300 rounded-xl hover:border-black hover:bg-black hover:text-white transition-all duration-300 text-left w-full font-medium shadow-sm hover:shadow-md transform hover:scale-[1.00]"
                 style={{ whiteSpace: 'normal' }}
               >
                 {sample}
