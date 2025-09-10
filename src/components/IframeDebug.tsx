@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface IframeDebugProps {
   code: string;
@@ -22,7 +22,7 @@ export default function IframeDebug({ code, title }: IframeDebugProps) {
   };
 
   return (
-    <div className="space-y-2 max-w-7xl">
+    <div className="space-y-2 max-w-7xl h-full">
       <div className="flex items-center gap-2 text-sm ">
         {/* <span className="font-medium">Iframe Status:</span> */}
         {/* {iframeLoaded && (
@@ -41,22 +41,22 @@ export default function IframeDebug({ code, title }: IframeDebugProps) {
           </span>
         )}
       </div>
-      
-      <div className=" rounded-lg overflow-hidden">
-        <iframe
-          srcDoc={code}
-          className="w-full h-[1600px]"
-          title={title}
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          onLoad={handleIframeLoad}
-          onError={handleIframeError}
-        />
-      </div>
-      
+
+      <iframe
+        srcDoc={code}
+        className="w-full h-full"
+        title={title}
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        onLoad={handleIframeLoad}
+        onError={handleIframeError}
+      />
+
       {iframeError && (
         <div className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
-          <p className="font-medium">Iframe failed to load. This could be due to:</p>
+          <p className="font-medium">
+            Iframe failed to load. This could be due to:
+          </p>
           <ul className="list-disc list-inside mt-1 space-y-1">
             <li>JavaScript errors in the generated code</li>
             <li>Browser security restrictions</li>

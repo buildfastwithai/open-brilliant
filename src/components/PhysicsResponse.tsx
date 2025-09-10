@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import IframeDebug from './IframeDebug';
+import IframeDebug from "./IframeDebug";
 
 interface PhysicsResponse {
   analysis: string;
@@ -27,13 +27,16 @@ export default function PhysicsResponse({ response }: PhysicsResponseProps) {
               Physics Animation
             </h3>
           </div>
-          
+
           {/* Animation container with enhanced styling */}
           <div className="relative">
-            <div className="h-[1600px] w-full bg-gradient-to-br from-gray-50 to-white">
-              <IframeDebug code={response.code} title="Physics Animation Preview" />
+            <div className="aspect-video max-h-[80vh] w-full bg-gradient-to-br from-gray-50 to-white">
+              <IframeDebug
+                code={response.code}
+                title="Physics Animation Preview"
+              />
             </div>
-            
+
             {/* Corner decorations */}
             <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-black rounded-tr-lg"></div>
             <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-black rounded-bl-lg"></div>
