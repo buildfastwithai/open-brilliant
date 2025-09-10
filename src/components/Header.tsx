@@ -4,15 +4,22 @@ import { useState } from "react";
 import { ExternalLink, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 
-export default function Header() {
+export default function Header({
+  setShowCreator,
+}: {
+  setShowCreator: (show: boolean) => void;
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="border-b-2 border-border bg-background">
-      <div className="max-w-7xl mx-auto px-6 py-2">
+      <div className="mx-auto px-6 py-2">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
-          <div className="flex items-center space-x-4">
+          <div
+            className="flex items-center space-x-4 cursor-pointer"
+            onClick={() => setShowCreator(false)}
+          >
             <div>
               <h1 className="text-2xl font-bold text-foreground">
                 Open Brilliant
@@ -26,13 +33,16 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <a
-              href="https://buildfastwithai.com"
+              href="https://buildfastwithai.com/genai-course"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 transition-colors"
+              className="flex flex-col items-end transition-colors"
             >
-              Build Fast With AI
-              <ExternalLink className="w-3 h-3" />
+              <span className="text-muted-foreground text-xs">powered by</span>
+              <span className="text-foreground font-bold flex items-center gap-1">
+                Build Fast With AI
+                <ExternalLink className="w-3 h-3" />
+              </span>
             </a>
           </nav>
 
@@ -55,7 +65,7 @@ export default function Header() {
           <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="flex flex-col space-y-3">
               <a
-                href="https://buildfastwithai.com"
+                href="https://buildfastwithai.com/genai-course"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-foreground hover:text-muted-foreground transition-colors"

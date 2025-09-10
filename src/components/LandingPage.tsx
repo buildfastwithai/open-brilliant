@@ -16,9 +16,9 @@ export default function LandingPage({
   onStartCreating: () => void;
 }) {
   return (
-    <div className="h-screen bg-background text-foreground overflow-hidden relative flex">
+    <div className="min-h-screen bg-background text-foreground overflow-hidden relative flex flex-col lg:flex-row">
       {/* ===== Left Animated Physics Section ===== */}
-      <div className="w-1/4 bg-card relative overflow-hidden">
+      <div className="hidden lg:block lg:w-1/4 bg-card relative overflow-hidden">
         {/* Seamless Blend Effect */}
         <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-r from-transparent to-background z-10"></div>
 
@@ -38,7 +38,12 @@ export default function LandingPage({
                   stroke="hsl(var(--muted-foreground) / 0.05)"
                   strokeWidth="1"
                 />
-                <circle cx="0" cy="0" r="1" fill="hsl(var(--muted-foreground) / 0.08)" />
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="1"
+                  fill="hsl(var(--muted-foreground) / 0.08)"
+                />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#modernGrid)" />
@@ -62,7 +67,11 @@ export default function LandingPage({
                 strokeDasharray="2,4"
               />
               {/* Moving Ball */}
-              <circle r="2.5" fill="hsl(var(--foreground))" className="animate-projectile">
+              <circle
+                r="2.5"
+                fill="hsl(var(--foreground))"
+                className="animate-projectile"
+              >
                 <animateMotion dur="3s" repeatCount="indefinite" rotate="auto">
                   <mpath href="#projectilePath" />
                 </animateMotion>
@@ -149,7 +158,7 @@ export default function LandingPage({
       </div>
 
       {/* ===== Center Main Content Section ===== */}
-      <div className="flex-1 bg-background relative flex items-center justify-center">
+      <div className="flex-1 bg-background relative flex items-center justify-center px-4 py-8 lg:py-0">
         {/* Clean Background with Minimal Effects */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {/* Ultra Subtle Grid */}
@@ -190,13 +199,13 @@ export default function LandingPage({
         </div>
 
         {/* Main Content - Centered */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-8">
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-8">
           {/* Header */}
-          <div className="mb-12 relative">
-            <div className="absolute -top-2 -left-2">
+          <div className="mb-8 sm:mb-12 relative">
+            <div className="absolute -top-2 -left-2 hidden sm:block">
               <Zap className="w-4 h-4 text-muted-foreground animate-pulse" />
             </div>
-            <span className="inline-flex justify-center items-center gap-3 px-6 py-3 border border-border bg-card/50 backdrop-blur-sm text-foreground rounded-full text-sm font-medium shadow-2xl">
+            <span className="inline-flex justify-center items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 border border-border bg-card/50 backdrop-blur-sm text-foreground rounded-full text-xs sm:text-sm font-medium shadow-2xl">
               Powered by{" "}
               <a
                 href="https://buildfastwithai.com"
@@ -205,14 +214,14 @@ export default function LandingPage({
                 className="hover:text-muted-foreground transition-colors flex items-center gap-1 font-semibold"
               >
                 Build Fast With AI
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </a>
             </span>
           </div>
 
           {/* Main Title */}
-          <div className="mb-8 relative">
-            <h1 className=" text-4xl md:text-7xl font-bold mb-4 leading-none tracking-tight">
+          <div className="mb-6 sm:mb-8 relative">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-none tracking-tight">
               <span className="text-foreground"> Master Physics with</span>
               <br />
               <span className="text-foreground glow-text-mono animate-glow-mono">
@@ -230,23 +239,23 @@ export default function LandingPage({
           </div>
 
           {/* Description */}
-          <p className="text-xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed font-light">
             Transform complex physics concepts into{" "}
             <span className="text-foreground font-normal">
               interactive visualizations
             </span>
             .
             <br />
-            <span className="text-foreground hidden lg:block font-normal">
+            <span className="text-foreground hidden sm:block font-normal">
               Describe any scenario and let AI bring it to life.
             </span>
           </p>
 
           {/* Modern Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-12 sm:mb-16">
             <button
               onClick={onStartCreating}
-              className="group relative flex items-center gap-4 px-10 py-5 bg-primary text-primary-foreground rounded-none hover:bg-primary/90 transition-all duration-300 text-lg font-bold tracking-wide uppercase letterspacing shadow-2xl hover:shadow-primary/10 hover:scale-[1.02]"
+              className="group relative flex items-center gap-3 sm:gap-4 px-6 sm:px-10 py-3 sm:py-5 bg-primary text-primary-foreground rounded-none hover:bg-primary/90 transition-all duration-300 text-base sm:text-lg font-bold tracking-wide uppercase letterspacing shadow-2xl hover:shadow-primary/10 hover:scale-[1.02] w-full sm:w-auto max-w-xs sm:max-w-none"
             >
               <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
               Create Animation
@@ -255,7 +264,7 @@ export default function LandingPage({
           </div>
 
           {/* Modern Feature Indicators */}
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground uppercase tracking-widest font-mono">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-xs sm:text-sm text-muted-foreground uppercase tracking-widest font-mono">
             <div className="flex items-center gap-2">
               <div className="w-2 h-px bg-foreground animate-pulse"></div>
               Real-time Physics
@@ -278,8 +287,153 @@ export default function LandingPage({
         </div>
       </div>
 
+      {/* ===== Mobile Physics Animation Section ===== */}
+      <div className="block lg:hidden bg-card relative overflow-hidden py-8">
+        {/* Minimal Mobile Grid Pattern */}
+        <div className="absolute inset-0">
+          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern
+                id="mobileGrid"
+                width="30"
+                height="30"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 30 0 L 0 0 0 30"
+                  fill="none"
+                  stroke="hsl(var(--muted-foreground) / 0.03)"
+                  strokeWidth="1"
+                />
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="0.5"
+                  fill="hsl(var(--muted-foreground) / 0.05)"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#mobileGrid)" />
+          </svg>
+        </div>
+
+        {/* Mobile Physics Elements */}
+        <div className="relative z-10 flex justify-center items-center gap-8 px-4">
+          {/* Simple Projectile Motion */}
+          <div className="w-16 h-12">
+            <svg className="w-full h-full" viewBox="0 0 64 48">
+              <defs>
+                <path id="mobileProjectilePath" d="M5,40 Q25,10 55,35" />
+              </defs>
+              <path
+                d="M5,40 Q25,10 55,35"
+                stroke="hsl(var(--muted-foreground) / 0.3)"
+                strokeWidth="1"
+                fill="none"
+                strokeDasharray="1,2"
+              />
+              <circle
+                r="1.5"
+                fill="hsl(var(--foreground))"
+                className="animate-projectile"
+              >
+                <animateMotion dur="2s" repeatCount="indefinite">
+                  <mpath href="#mobileProjectilePath" />
+                </animateMotion>
+              </circle>
+            </svg>
+          </div>
+
+          {/* Simple Neural Network */}
+          <div className="w-20 h-12">
+            <svg className="w-full h-full" viewBox="0 0 80 48">
+              <circle
+                cx="10"
+                cy="16"
+                r="2"
+                fill="hsl(var(--foreground))"
+                className="animate-neural-pulse"
+              />
+              <circle
+                cx="10"
+                cy="32"
+                r="2"
+                fill="hsl(var(--foreground))"
+                className="animate-neural-pulse"
+                style={{ animationDelay: "0.5s" }}
+              />
+              <circle
+                cx="40"
+                cy="24"
+                r="2"
+                fill="hsl(var(--foreground))"
+                className="animate-neural-pulse"
+                style={{ animationDelay: "1s" }}
+              />
+              <circle
+                cx="70"
+                cy="24"
+                r="2"
+                fill="hsl(var(--foreground))"
+                className="animate-neural-pulse"
+                style={{ animationDelay: "1.5s" }}
+              />
+              <line
+                x1="10"
+                y1="16"
+                x2="40"
+                y2="24"
+                stroke="hsl(var(--muted-foreground) / 0.2)"
+                strokeWidth="1"
+                className="animate-neural-connection"
+              />
+              <line
+                x1="10"
+                y1="32"
+                x2="40"
+                y2="24"
+                stroke="hsl(var(--muted-foreground) / 0.2)"
+                strokeWidth="1"
+                className="animate-neural-connection"
+                style={{ animationDelay: "0.3s" }}
+              />
+              <line
+                x1="40"
+                y1="24"
+                x2="70"
+                y2="24"
+                stroke="hsl(var(--muted-foreground) / 0.2)"
+                strokeWidth="1"
+                className="animate-neural-connection"
+                style={{ animationDelay: "0.6s" }}
+              />
+            </svg>
+          </div>
+
+          {/* Simple Wave */}
+          <div className="w-16 h-8">
+            <svg className="w-full h-full" viewBox="0 0 64 32">
+              <path
+                d="M5,16 Q15,8 25,16 T45,16 T60,16"
+                stroke="hsl(var(--muted-foreground) / 0.4)"
+                strokeWidth="1.5"
+                fill="none"
+                className="animate-wave-physics"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* Mobile Physics Labels */}
+        <div className="text-center mt-4">
+          <div className="text-xs text-muted-foreground font-mono uppercase tracking-wider">
+            Physics • AI • Simulations
+          </div>
+        </div>
+      </div>
+
       {/* ===== Right Physics Computation/AI Animation Section ===== */}
-      <div className="w-1/4 bg-card relative overflow-hidden">
+      <div className="hidden lg:block lg:w-1/4 bg-card relative overflow-hidden">
         {/* Seamless Blend Effect */}
         <div className="absolute right-0 top-0 w-full h-96 bg-gradient-to-t from-transparent to-background z-10"></div>
         <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-l from-transparent to-background z-10"></div>
@@ -926,6 +1080,38 @@ export default function LandingPage({
         }
         .overflow-auto::-webkit-scrollbar-thumb:hover {
           background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .animate-physics-float,
+          .animate-physics-data-float {
+            animation-duration: 10s, 12s !important;
+          }
+
+          .animate-glow-mono {
+            animation-duration: 6s !important;
+          }
+
+          /* Reduce motion for better mobile performance */
+          @media (prefers-reduced-motion: reduce) {
+            .animate-projectile,
+            .animate-freefall,
+            .animate-car1,
+            .animate-car2,
+            .animate-collision-flash,
+            .animate-calculation-update,
+            .animate-wave-physics,
+            .animate-neural-pulse,
+            .animate-neural-connection,
+            .animate-data-flow,
+            .animate-processing-spin,
+            .animate-physics-float,
+            .animate-physics-data-float,
+            .animate-glow-mono {
+              animation: none !important;
+            }
+          }
         }
       `}</style>
     </div>

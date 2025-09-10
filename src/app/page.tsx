@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Menu, X } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import LandingPage from "@/components/LandingPage";
@@ -17,17 +17,54 @@ interface PhysicsResponse {
   concepts: string[];
 }
 
+interface ChatMessage {
+  id: string;
+  type: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+  status?: "loading" | "success" | "error";
+}
+
 export default function Home() {
   const [response, setResponse] = useState<PhysicsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showCreator, setShowCreator] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [showSampleQuestions, setShowSampleQuestions] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSubmit = async (question: string) => {
+    // Hide sample questions after first submit
+    setShowSampleQuestions(false);
+    // Close sidebar on mobile after submit
+    setSidebarOpen(false);
     setLoading(true);
     setError("");
     setResponse(null);
+    setSelectedQuestion("");
+
+    // Add user message
+    const userMessageId = Date.now().toString();
+    const userMessage: ChatMessage = {
+      id: userMessageId,
+      type: "user",
+      content: question,
+      timestamp: new Date(),
+    };
+
+    // Add loading assistant message
+    const assistantMessageId = (Date.now() + 1).toString();
+    const loadingMessage: ChatMessage = {
+      id: assistantMessageId,
+      type: "assistant",
+      content: "Generating your physics animation...",
+      timestamp: new Date(),
+      status: "loading",
+    };
+
+    setChatMessages((prev) => [...prev, userMessage, loadingMessage]);
 
     try {
       const res = await fetch("/api/generate-physics", {
@@ -47,8 +84,36 @@ export default function Home() {
 
       const data = await res.json();
       setResponse(data);
+
+      // Update loading message to success
+      setChatMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? {
+                ...msg,
+                content: "✅ Physics animation generated successfully!",
+                status: "success",
+              }
+            : msg
+        )
+      );
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
+
+      // Update loading message to error
+      setChatMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? {
+                ...msg,
+                content: `❌ Error: ${errorMessage}`,
+                status: "error",
+              }
+            : msg
+        )
+      );
     } finally {
       setLoading(false);
     }
@@ -60,17 +125,14 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleBackToLanding = () => {
-    setShowCreator(false);
+  const handleNewConversation = () => {
+    setChatMessages([]);
     setResponse(null);
     setError("");
     setLoading(false);
-  };
-
-  const handleQuestionSelect = (question: string) => {
-    setSelectedQuestion(question);
-    // Scroll to the form
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    setSelectedQuestion("");
+    setShowSampleQuestions(true);
+    setSidebarOpen(false); // Close sidebar on mobile when starting new conversation
   };
 
   if (!showCreator) {
@@ -85,47 +147,211 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Header />
+      <Header setShowCreator={setShowCreator} />
 
-      {/* Creator Section */}
-      <main className="gap-10 p-6 flex h-full bg-muted">
-        {/* Creator Header */}
-        <div className="flex flex-col items-center justify-center max-w-sm w-full h-full">
-          {/* Question Input */}
-          <PhysicsQuestionForm
-            onSubmit={handleSubmit}
-            loading={loading}
-            showSampleQuestions={!response}
-            selectedQuestion={selectedQuestion}
-            onQuestionChange={setSelectedQuestion}
-          />
-        </div>
-
-        <div className="flex-1 flex flex-col w-full border shadow-2xl bg-background">
-          {!response && (
-            <div className="text-center p-8">
-              <h1 className="text-4xl font-bold mb-4">
-                Create Your Physics Animation
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Describe any physics scenario and watch AI generate an
-                interactive animation with real-time calculations
-              </p>
+      {!response && !loading ? (
+        // Default Chat Interface View - Mobile: Full screen, Desktop: Split view
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          {/* Chat Interface */}
+          <main className="max-w-md w-full flex-1 lg:w-80 xl:w-96 flex items-center justify-center p-4 bg-muted lg:border-r lg:border-border">
+            <div className="w-full max-w-2xl lg:max-w-none p-6">
+              <PhysicsQuestionForm
+                onSubmit={handleSubmit}
+                loading={loading}
+                showSampleQuestions={showSampleQuestions}
+                selectedQuestion={selectedQuestion}
+                onQuestionChange={setSelectedQuestion}
+                chatMessages={chatMessages}
+                onNewConversation={handleNewConversation}
+              />
             </div>
-          )}
-          {/* Error Display */}
-          {error && (
-            <div className="mb-6 p-6 bg-destructive/10 border-2 border-destructive/20 rounded-xl shadow-lg">
-              <p className="text-destructive font-medium">{error}</p>
-            </div>
-          )}
-          {/* Response Display */}
-          {response && <PhysicsResponse response={response} />}
+          </main>
 
-          {/* Loading State with Skeleton */}
-          {loading && <SkeletonLoader />}
+          {/* Desktop Preview Area - Hidden on mobile */}
+          <aside className="hidden lg:flex flex-1 bg-background relative overflow-hidden">
+            <div className="relative h-full w-full flex items-center justify-center">
+              {/* Background Grid Pattern */}
+              <div className="absolute inset-0">
+                <svg
+                  className="w-full h-full"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <pattern
+                      id="desktopGrid"
+                      width="60"
+                      height="60"
+                      patternUnits="userSpaceOnUse"
+                    >
+                      <path
+                        d="M 60 0 L 0 0 0 60"
+                        fill="none"
+                        stroke="hsl(var(--muted-foreground) / 0.03)"
+                        strokeWidth="1"
+                      />
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r="1"
+                        fill="hsl(var(--muted-foreground) / 0.05)"
+                      />
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#desktopGrid)" />
+                </svg>
+              </div>
+
+              {/* Preview Placeholder Content */}
+              <div className="relative z-10 text-center max-w-lg mx-auto px-8">
+                <div className="mb-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-8 h-8 bg-primary/20 rounded-full animate-pulse"></div>
+                  </div>
+                  <h2 className="text-2xl font-semibold mb-4 text-foreground">
+                    Physics Preview
+                  </h2>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Your physics animation will appear here after you submit a
+                    question. Try one of the sample questions to get started!
+                  </p>
+                </div>
+
+                {/* Floating Physics Elements */}
+                <div className="absolute inset-0 pointer-events-none">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute w-1 h-1 bg-primary/20 rounded-full animate-physics-float"
+                      style={{
+                        top: `${20 + Math.random() * 60}%`,
+                        left: `${10 + Math.random() * 80}%`,
+                        animationDuration: `${8 + Math.random() * 12}s`,
+                        animationDelay: `${Math.random() * 5}s`,
+                      }}
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
-      </main>
+      ) : (
+        // Response Preview Mode - Mobile: Sidebar layout, Desktop: Keep split view
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          {/* Mobile Sidebar Toggle */}
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="lg:hidden fixed top-20 right-4 z-50 p-2 bg-primary text-primary-foreground rounded-full shadow-lg"
+          >
+            {sidebarOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
+
+          {/* Mobile Sidebar Overlay */}
+          {sidebarOpen && (
+            <div
+              className="lg:hidden fixed inset-0 bg-black/50 z-30"
+              onClick={() => setSidebarOpen(false)}
+            />
+          )}
+
+          {/* Chat Interface - Mobile: Sidebar, Desktop: Left pane */}
+          <aside
+            className={`
+            w-full lg:w-80 xl:w-96 bg-muted lg:border-r lg:border-border flex flex-col
+            lg:relative lg:translate-x-0 lg:max-h-none
+            ${
+              sidebarOpen
+                ? "fixed inset-0 z-40 max-h-screen"
+                : "hidden lg:flex max-h-[40vh]"
+            }
+          `}
+          >
+            <div className="flex-1 overflow-hidden p-6">
+              <PhysicsQuestionForm
+                onSubmit={handleSubmit}
+                loading={loading}
+                showSampleQuestions={showSampleQuestions}
+                selectedQuestion={selectedQuestion}
+                onQuestionChange={setSelectedQuestion}
+                chatMessages={chatMessages}
+                onNewConversation={handleNewConversation}
+              />
+            </div>
+          </aside>
+
+          {/* Main Canvas Area - Desktop: Right pane, Mobile: Full screen */}
+          <main className="flex-1 flex flex-col bg-background relative overflow-hidden">
+            {/* Error Display */}
+            {error && (
+              <div className="mb-4 sm:mb-6 p-4 sm:p-6 bg-destructive/10 border-2 border-destructive/20 rounded-xl shadow-lg mx-4 sm:mx-0">
+                <p className="text-destructive font-medium text-sm sm:text-base">
+                  {error}
+                </p>
+              </div>
+            )}
+
+            {/* Response Display */}
+            {response ? (
+              <div className="flex-1 p-4 overflow-hidden">
+                <PhysicsResponse response={response} />
+              </div>
+            ) : loading ? (
+              <div className="relative h-full flex items-center justify-center">
+                {/* Background Grid Pattern for Loading */}
+                <div className="absolute inset-0">
+                  <svg
+                    className="w-full h-full"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <pattern
+                        id="loadingGrid"
+                        width="60"
+                        height="60"
+                        patternUnits="userSpaceOnUse"
+                      >
+                        <path
+                          d="M 60 0 L 0 0 0 60"
+                          fill="none"
+                          stroke="hsl(var(--muted-foreground) / 0.03)"
+                          strokeWidth="1"
+                        />
+                        <circle
+                          cx="0"
+                          cy="0"
+                          r="1"
+                          fill="hsl(var(--muted-foreground) / 0.05)"
+                        />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#loadingGrid)" />
+                  </svg>
+                </div>
+
+                {/* Loading Content */}
+                <div className="relative z-10 text-center max-w-lg mx-auto px-8">
+                  <div className="mb-8">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-8 h-8 bg-primary/20 rounded-full animate-spin"></div>
+                    </div>
+                    <h2 className="text-2xl font-semibold mb-4 text-foreground">
+                      Generating Physics Animation...
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed">
+                      AI is analyzing your physics scenario and creating an
+                      interactive simulation.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </main>
+        </div>
+      )}
     </div>
   );
 }
