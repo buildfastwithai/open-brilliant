@@ -24,12 +24,6 @@ export default function IframeDebug({ code, title }: IframeDebugProps) {
   return (
     <div className="space-y-2 max-w-7xl h-full">
       <div className="flex items-center gap-2 text-sm ">
-        {/* <span className="font-medium">Iframe Status:</span> */}
-        {/* {iframeLoaded && (
-          <span className="text-green-600 bg-green-100 px-2 py-1 rounded">
-            ✓ Loaded Successfully
-          </span>
-        )} */}
         {iframeError && (
           <span className="text-red-600 bg-red-100 px-2 py-1 rounded">
             ✗ Error Loading
@@ -41,16 +35,6 @@ export default function IframeDebug({ code, title }: IframeDebugProps) {
           </span>
         )}
       </div>
-
-      <iframe
-        srcDoc={code}
-        className="w-full h-full"
-        title={title}
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        onLoad={handleIframeLoad}
-        onError={handleIframeError}
-      />
 
       {iframeError && (
         <div className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">

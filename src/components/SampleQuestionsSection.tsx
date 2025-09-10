@@ -32,9 +32,9 @@ export default function SampleQuestionsSection({ onQuestionSelect, loading }: Sa
   };
 
   return (
-    <div className="bg-white border-2 border-black rounded-2xl p-4 sm:p-6 shadow-2xl">
-      <p className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-black flex items-center gap-2">
-        <div className="w-2 h-2 bg-black rounded-full"></div>
+    <div className="bg-background border-2 border-border rounded-2xl p-4 sm:p-6 shadow-2xl">
+      <p className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-foreground flex items-center gap-2">
+        <div className="w-2 h-2 bg-foreground rounded-full"></div>
         Try these sample questions:
       </p>
       <div className="max-h-48 sm:max-h-60 overflow-y-auto flex flex-col gap-2 sm:gap-3 pr-1 sm:pr-2">
@@ -43,7 +43,7 @@ export default function SampleQuestionsSection({ onQuestionSelect, loading }: Sa
             key={index}
             onClick={() => handleSampleClick(sample)}
             disabled={loading}
-            className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border-2 border-gray-300 rounded-xl hover:border-black hover:bg-black hover:text-white transition-all duration-300 text-left w-full font-medium shadow-sm hover:shadow-md transform hover:scale-[1.00] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border-2 border-muted rounded-xl hover:border-foreground hover:bg-foreground hover:text-background transition-all duration-300 text-left w-full font-medium shadow-sm hover:shadow-md transform hover:scale-[1.00] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             style={{ whiteSpace: 'normal' }}
           >
             {sample}

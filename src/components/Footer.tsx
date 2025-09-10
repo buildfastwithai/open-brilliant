@@ -4,23 +4,23 @@ import { ExternalLink,  Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white border-t-2 border-white">
+    <footer className="bg-background text-foreground border-t-2 border-border">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div>
             <h3 className="text-xl font-bold mb-4">Open Brilliant</h3>
-            <p className="text-gray-300 mb-4">
+            <p className="text-muted-foreground mb-4">
               Interactive physics learning with AI-generated animations. 
               Create custom visualizations and master complex concepts.
             </p>
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-400">Powered by</span>
+              <span className="text-muted-foreground/80">Powered by</span>
               <a 
                 href="https://buildfastwithai.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-white hover:text-gray-300 transition-colors font-semibold"
+                className="flex items-center gap-1 text-foreground hover:text-muted-foreground transition-colors font-semibold"
               >
                 Build Fast With AI
                 <ExternalLink className="w-3 h-3" />
@@ -33,17 +33,17 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#features" className="text-gray-300 hover:text-white transition-colors">
+                <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
                   Features
                 </a>
               </li>
               <li>
-                <a href="#demo" className="text-gray-300 hover:text-white transition-colors">
+                <a href="#demo" className="text-muted-foreground hover:text-foreground transition-colors">
                   Demo
                 </a>
               </li>
               <li>
-                <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">
+                <a href="#how-it-works" className="text-muted-foreground hover:text-foreground transition-colors">
                   How It Works
                 </a>
               </li>
@@ -58,7 +58,7 @@ export default function Footer() {
                 href="https://buildfastwithai.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
                 Build Fast With AI
@@ -72,14 +72,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p className="text-gray-400 text-sm">
+        <div className="border-t border-border mt-8 pt-8 text-center">
+          <p className="text-muted-foreground text-sm">
             © 2024 Open Brilliant. Built with ❤️ by{' '}
             <a 
               href="https://buildfastwithai.com" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-white hover:text-gray-300 transition-colors"
+              className="text-foreground hover:text-muted-foreground transition-colors"
             >
               Build Fast With AI
             </a>
