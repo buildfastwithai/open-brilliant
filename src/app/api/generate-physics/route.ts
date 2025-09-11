@@ -4,29 +4,52 @@ import { cerebras } from "@ai-sdk/cerebras";
 import { generateObject } from "ai";
 import { z } from "zod";
 
-const SYSTEM_PROMPT = `Create an interactive physics animation with working visualization.
+const PROMPT_GENERATOR_SYSTEM = `You are a physics education expert who creates structured prompts for physics animations.
 
-THINK DEEPLY AND WORK IN THESE STEPS:
-1. FIRST CREATE FORMULA - Identify the key physics equations and mathematical relationships
-2. THEN THINK ABOUT HOW TO REPRESENT - Plan the visual representation and animation approach  
-3. THEN IMPLEMENT - Build the complete interactive animation
+Your task is to analyze a raw physics question and generate a refined, structured prompt that will be used to create an interactive physics animation.
+
+For any given physics question, you must:
+1. Identify the core physics topic and concepts
+2. Extract the key formulas and mathematical relationships
+3. Create a detailed animation prompt that specifies exactly what should be visualized
+
+Return ONLY valid JSON with this exact structure:
+{
+  "topic": "The main physics topic (e.g., 'Projectile Motion', 'Simple Harmonic Motion', 'Electromagnetic Induction')",
+  "key_concepts": ["concept1", "concept2", "concept3"],
+  "formulas": ["F = ma", "v = v₀ + at", "x = x₀ + v₀t + ½at²"],
+  "animation_prompt": "Detailed description of what the animation should show, including objects, movements, parameters, and educational goals"
+}
+
+The animation_prompt should be comprehensive and specific, describing:
+- What physics objects should be visualized
+- How they should move and interact
+- What parameters should be adjustable
+- What real-time data should be displayed
+- How to make the concept educational and clear
+
+Focus on creating a prompt that will result in a professional, educational physics animation.`;
+
+const SYSTEM_PROMPT = `Create an interactive physics animation with working visualization.
 
 You MUST return ONLY valid JSON with this structure:
 {
-  "analysis": "Comprehensive deep physics analysis with detailed mathematical derivations, assumptions, and limitations"
-  "solution": "Step-by-step solution approach following the 3-step process above", 
+  "analysis": "Brief physics analysis with key formulas",
+  "solution": "Step-by-step solution approach", 
   "code": "Complete HTML code with animation",
   "concepts": ["physics", "concepts"]
 }
 
 LAYOUT REQUIREMENTS (CRITICAL - USE CSS GRID):
-Use CSS Grid to create a proper block-based layout with these areas:
-1. CANVAS AREA (top section, full width): Animation canvas with larger size
+Use CSS Grid with these areas:
+1. CANVAS AREA (top section, full width): Animation canvas
 2. CONTROLS AREA (bottom center): Play/Pause/Reset buttons 
-3. PARAMETERS AREA (bottom right): Interactive sliders for physics parameters
-4. DATA AREA (bottom left): Real-time physics calculations and graphs
+3. PARAMETERS AREA (bottom right): Interactive sliders
+4. DATA AREA (bottom left): Compact real-time data display
+5. ADDITIONAL DATA AREA (below controls): Extra data that doesn't fit in main data area
 
-EXACT GRID LAYOUT STRUCTURE:
+IMPROVED UI DESIGN:
+
 \`\`\`css
 body, html {
   margin: 0;
@@ -38,10 +61,11 @@ body, html {
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto auto auto;
   grid-template-areas: 
     "canvas canvas canvas"
-    "data controls parameters";
+    "data controls parameters"
+    "additional-data additional-data additional-data";
   min-height: 100vh;
   gap: 16px;
   padding: 16px;
@@ -63,18 +87,6 @@ body, html {
   position: relative;
   overflow: hidden;
 }
-.canvas-area::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 1;
-}
 canvas {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   border-radius: 16px;
@@ -82,96 +94,181 @@ canvas {
   position: relative;
   z-index: 2;
 }
+
+/* IMPROVED CONTROLS - Better UI */
 .controls-area { 
   grid-area: controls;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
   border: 2px solid #667eea;
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  padding: 16px;
-  height: 80px;
+  padding: 20px;
+  height: 100px;
 }
 .control-btn {
   border: none;
-  padding: 12px 20px;
-  border-radius: 25px;
+  padding: 16px 24px;
+  border-radius: 12px;
   color: white;
-  font-weight: 700;
-  font-size: 14px;
+  font-weight: 600;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  width: 80px;
-  height: 40px;
-  position: relative;
-  overflow: hidden;
+  min-width: 100px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.control-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s ease;
-}
-.control-btn:hover::before {
-  left: 100%;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 .control-btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  opacity: 0.9;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 .control-btn:active {
-  transform: translateY(0px) scale(1.0);
+  transform: translateY(-1px);
 }
 .play-btn {
   background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-  box-shadow: 0 3px 10px rgba(17, 153, 142, 0.3);
-}
-.play-btn:hover {
-  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
 }
 .pause-btn {
   background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
-  box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
-}
-.pause-btn:hover {
-  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
 }
 .reset-btn {
   background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
-  box-shadow: 0 3px 10px rgba(162, 155, 254, 0.3);
 }
-.reset-btn:hover {
-  box-shadow: 0 4px 12px rgba(162, 155, 254, 0.4);
-}
+
+/* IMPROVED PARAMETERS - Better UI */
 .parameters-area { 
   grid-area: parameters;
-  padding: 16px;
+  padding: 20px;
   background: linear-gradient(135deg, #FF6B9D 0%, #C44569 100%);
   border-radius: 16px;
   border: 3px solid #FF6B9D;
   box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
   min-height: 200px;
 }
+.param-group {
+  margin-bottom: 16px;
+}
+.param-label {
+  display: block;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.param-value {
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  margin-left: 8px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.param-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.3);
+  outline: none;
+  -webkit-appearance: none;
+}
+.param-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* IMPROVED DATA AREA - Compact Layout */
 .data-area { 
   grid-area: data;
-  padding: 16px;
+  padding: 20px;
   background: linear-gradient(135deg, #FFD93D 0%, #FF8B94 100%);
   border-radius: 16px;
   border: 3px solid #FFD93D;
   box-shadow: 0 4px 15px rgba(255, 217, 61, 0.3);
   min-height: 200px;
+  overflow-y: auto;
+}
+.data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.data-item {
+  background: rgba(255,255,255,0.2);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
+.data-label {
+  display: block;
+  color: #333;
+  font-weight: 600;
+  font-size: 12px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.data-value {
+  color: #333;
+  font-weight: 700;
+  font-size: 16px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* ADDITIONAL DATA AREA - Below Controls */
+.additional-data-area { 
+  grid-area: additional-data;
+  padding: 20px;
+  background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
+  border-radius: 16px;
+  border: 3px solid #4ECDC4;
+  box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+  min-height: 120px;
+  overflow-y: auto;
+}
+.additional-data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.additional-data-item {
+  background: rgba(255,255,255,0.2);
+  padding: 16px;
+  border-radius: 12px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.additional-data-label {
+  display: block;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.additional-data-value {
+  color: white;
+  font-weight: 700;
+  font-size: 18px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 \`\`\`
 
@@ -179,10 +276,27 @@ HTML STRUCTURE:
 \`\`\`html
 <div class="container">
   <div class="canvas-area">
-    <canvas id="canvas" width="900" height="450" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);"></canvas>
+    <canvas id="canvas" width="900" height="450"></canvas>
   </div>
   <div class="data-area">
-    <!-- Real-time data and graphs here -->
+    <div class="data-grid">
+      <div class="data-item">
+        <span class="data-label">Time</span>
+        <span class="data-value" id="time">0.00 s</span>
+      </div>
+      <div class="data-item">
+        <span class="data-label">Position</span>
+        <span class="data-value" id="position">0.00 m</span>
+      </div>
+      <div class="data-item">
+        <span class="data-label">Velocity</span>
+        <span class="data-value" id="velocity">0.00 m/s</span>
+      </div>
+      <div class="data-item">
+        <span class="data-label">Energy</span>
+        <span class="data-value" id="energy">0.00 J</span>
+      </div>
+    </div>
   </div>
   <div class="controls-area">
     <button onclick="play()" class="control-btn play-btn">▶️ Play</button>
@@ -190,81 +304,48 @@ HTML STRUCTURE:
     <button onclick="reset()" class="control-btn reset-btn">🔄 Reset</button>
   </div>
   <div class="parameters-area">
-    <!-- Parameter sliders here -->
+    <div class="param-group">
+      <label class="param-label">Parameter 1</label>
+      <input type="range" class="param-slider" id="param1" min="0" max="100" value="50">
+      <span class="param-value" id="param1Value">50</span>
+    </div>
+  </div>
+  <div class="additional-data-area">
+    <div class="additional-data-grid">
+      <div class="additional-data-item">
+        <span class="additional-data-label">Additional Data 1</span>
+        <span class="additional-data-value" id="additional1">0.00</span>
+      </div>
+      <div class="additional-data-item">
+        <span class="additional-data-label">Additional Data 2</span>
+        <span class="additional-data-value" id="additional2">0.00</span>
+      </div>
+      <div class="additional-data-item">
+        <span class="additional-data-label">Additional Data 3</span>
+        <span class="additional-data-value" id="additional3">0.00</span>
+      </div>
+      <div class="additional-data-item">
+        <span class="additional-data-label">Additional Data 4</span>
+        <span class="additional-data-value" id="additional4">0.00</span>
+      </div>
+    </div>
   </div>
 </div>
 \`\`\`
 
-ENHANCED ANIMATION UI REQUIREMENTS:
-1. Canvas should be 900x450px with sophisticated gradient background and visual depth
-2. Use modern, clean styling with proper spacing and colorful backgrounds
-3. Each grid area should have distinct styling and clear boundaries
-4. Include working parameter controls with real-time updates
-5. Show real-time physics data and calculations with beautiful typography
-6. Use time variable for smooth animations (time += 0.016 each frame)
-7. Auto-start animation when loaded
-8. Controls should be prominently displayed at the bottom center
-9. Parameters should have colorful styling (pink theme)
-10. Data area should have distinct styling (yellow theme)
-11. CANVAS BACKGROUND: Use sophisticated gradient with subtle patterns, NOT plain white
-12. Add premium physics objects with advanced visual effects:
-    - Multi-layered gradients with radial and linear combinations
-    - Dynamic shadows that change with object movement
-    - Glowing effects using box-shadow and filter properties
-    - Particle trails and motion blur effects
-    - 3D-like depth using multiple shadow layers
-    - Smooth color transitions and hue shifts
-13. Use vibrant, saturated colors with complementary color schemes
-14. Implement advanced visual effects:
-    - Particle systems with varying sizes and opacities
-    - Trail effects using canvas composite operations
-    - Dynamic lighting effects with gradient overlays
-    - Smooth easing functions for natural motion
-    - Visual feedback for interactions (ripples, pulses)
-    - Animated backgrounds with subtle movement
-    - Glow effects on active elements
-    - Smooth transitions between states
+CRITICAL REQUIREMENTS:
+- Use the improved CSS above for better UI
+- Data area uses compact grid layout to prevent overflow
+- Buttons are larger and more professional looking
+- Parameter sliders have better styling and labels
+- Additional data area below controls shows extra physics data
+- All areas have consistent spacing and visual hierarchy
+- Canvas is 900x450px with gradient background
+- Auto-start animation when loaded
+- Use time variable for smooth animations (time += 0.016 each frame)
+- Display any additional physics calculations in the additional-data-area
 
-PREMIUM ANIMATION VISUAL EFFECTS:
-- Use multiple canvas layers for depth (background, objects, effects, UI)
-- Implement particle systems with physics-based behavior
-- Add motion blur effects for fast-moving objects
-- Create dynamic lighting with radial gradients
-- Use advanced color blending modes (multiply, overlay, screen)
-- Implement smooth camera movements and zoom effects
-- Add visual feedback for all user interactions
-- Create atmospheric effects (fog, dust, light rays)
-- Use advanced shadow techniques (multiple shadow layers)
-- Implement smooth color transitions and hue animations
-- Add subtle background animations (floating particles, ambient movement)
-- Create depth perception with size and opacity variations
-- Use advanced typography with shadows and gradients for data display
-
-CRITICAL ANIMATION RULES:
-- The draw() function MUST contain moving objects with premium visual effects
-- Show relevant physics objects with sophisticated rendering (not just basic shapes)
-- Display real-time calculations in the data-area with beautiful typography
-- All interactive elements must be functional with visual feedback
-- Each grid area must be clearly defined and styled
-- Implement smooth 60fps animations with proper frame timing
-- Use advanced canvas techniques for professional visual quality
-- Add visual polish to every element (shadows, gradients, effects)
-
-UI GUIDELINES - FOLLOW EXACTLY (NO VARIATIONS ALLOWED):
-- Use the EXACT CSS template provided - DO NOT modify button sizes, colors, or layout
-- CRITICAL: Control buttons MUST be exactly 80px wide × 40px high - NO EXCEPTIONS
-- Controls area MUST be exactly 80px high with 16px padding
-- Button gap MUST be exactly 12px
-- Font size MUST be exactly 14px for buttons
-- Border radius MUST be exactly 25px for buttons, 16px for areas
-- Canvas area MUST have the purple gradient background with decorative elements
-- Canvas itself MUST have light gradient background (not white) for better visual appeal
-- EXACT color scheme: Hot Pink/Purple for parameters, Yellow/Coral for data, Purple gradient for controls and canvas area
-- Button hover effects MUST be subtle: translateY(-2px) scale(1.02) only
-- NEVER change the grid layout structure or proportions
-- Consistency is MORE important than creativity - stick to the template
-
-Return complete, working HTML with proper layout and physics animation.`;
+Return complete, working HTML with improved UI and physics animation.`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -276,6 +357,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Define the schema for the prompt generator response
+    const promptGeneratorSchema = z.object({
+      topic: z.string().describe("The main physics topic"),
+      key_concepts: z.array(z.string()).describe("Array of key physics concepts"),
+      formulas: z.array(z.string()).describe("Array of relevant physics formulas"),
+      animation_prompt: z.string().describe("Detailed description of what the animation should show"),
+    });
 
     // Define the schema for the physics response
     const physicsSchema = z.object({
@@ -296,11 +385,28 @@ export async function POST(request: NextRequest) {
         .describe("Array of physics concepts"),
     });
 
-    // Generate physics analysis and code using Cerebras
-    const { object } = await generateObject({
+    // STEP 1: Generate refined structured prompt
+    const { object: generatedPrompt } = await generateObject({
+      model: cerebras("qwen-3-coder-480b"),
+      system: PROMPT_GENERATOR_SYSTEM,
+      prompt: `Physics Question: ${question}
+
+Analyze this physics question and create a structured prompt for animation generation.`,
+      schema: promptGeneratorSchema,
+      temperature: 0.3,
+    });
+console.log(generatedPrompt);
+    // STEP 2: Generate physics analysis and code using the refined prompt
+    const { object: physicsResult } = await generateObject({
       model: cerebras("qwen-3-coder-480b"),
       system: SYSTEM_PROMPT,
       prompt: `Physics Question: ${question}
+
+Generated Animation Prompt: ${generatedPrompt.animation_prompt}
+
+Topic: ${generatedPrompt.topic}
+Key Concepts: ${generatedPrompt.key_concepts.join(", ")}
+Formulas: ${generatedPrompt.formulas.join(", ")}
 
 Follow the 3-step deep thinking process:
 
@@ -352,15 +458,13 @@ IMPORTANT: Return analysis and solution as SINGLE STRING values, not arrays.`,
       temperature: 0.3,
     });
 
-    // Object is already structured and validated by Zod schema
-    const result = object;
-
     return NextResponse.json({
       success: true,
-      analysis: result.analysis,
-      solution: result.solution,
-      code: result.code,
-      concepts: result.concepts,
+      generatedPrompt: generatedPrompt,
+      analysis: physicsResult.analysis,
+      solution: physicsResult.solution,
+      code: physicsResult.code,
+      concepts: physicsResult.concepts,
     });
   } catch (error) {
     console.error("API Error:", error);
