@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ExternalLink, Menu, X } from "lucide-react";
+import { ExternalLink, Menu, X, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 
 export default function Header({
   setShowCreator,
+  onSettingsClick,
+  hasApiKey = false,
 }: {
   setShowCreator: (show: boolean) => void;
+  onSettingsClick?: () => void;
+  hasApiKey?: boolean;
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -32,6 +36,18 @@ export default function Header({
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
+            {/* Settings Button - Show when API key exists */}
+            {hasApiKey && onSettingsClick && (
+              <Button
+                onClick={onSettingsClick}
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Settings className="w-5 h-5" />
+              </Button>
+            )}
+            
             <a
               href="https://buildfastwithai.com/genai-course"
               target="_blank"
@@ -64,6 +80,20 @@ export default function Header({
         {isMenuOpen && (
           <nav className="md:hidden mt-4 pb-4 border-t border-border pt-4">
             <div className="flex flex-col space-y-3">
+              {/* Settings Option - Show when API key exists */}
+              {hasApiKey && onSettingsClick && (
+                <button
+                  onClick={() => {
+                    onSettingsClick();
+                    setIsMenuOpen(false);
+                  }}
+                  className="flex items-center gap-2 text-foreground hover:text-muted-foreground transition-colors text-left"
+                >
+                  <Settings className="w-4 h-4" />
+                  Settings
+                </button>
+              )}
+              
               <a
                 href="https://buildfastwithai.com/genai-course"
                 target="_blank"

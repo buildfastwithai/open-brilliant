@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import {  Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Settings } from "lucide-react";
 import Header from "@/components/Header";
 import LandingPage from "@/components/LandingPage";
 import PhysicsQuestionForm from "@/components/PhysicsQuestionForm";
 import PhysicsResponse from "@/components/PhysicsResponse";
+import ApiKeySettings from "@/components/ApiKeySettings";
+import SettingsDialog from "@/components/SettingsDialog";
+import Toast from "@/components/Toast";
 
 interface PhysicsResponse {
   analysis: string;
@@ -31,8 +34,55 @@ export default function Home() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [showSampleQuestions, setShowSampleQuestions] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [showSettings, setShowSettings] = useState(false);
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+    isVisible: boolean;
+  }>({
+    message: "",
+    type: "info",
+    isVisible: false,
+  });
+
+  // Load API key from localStorage on component mount
+  useEffect(() => {
+    const savedApiKey = localStorage.getItem("cerebras-api-key");
+    if (savedApiKey) {
+      setApiKey(savedApiKey);
+      console.log("API key loaded from localStorage");
+    }
+  }, []);
+
+  // Toast helper functions
+  const showToast = (message: string, type: "success" | "error" | "info" = "info") => {
+    setToast({ message, type, isVisible: true });
+  };
+
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, isVisible: false }));
+  };
+
+  // Save API key to localStorage when it changes
+  const handleApiKeyChange = (newApiKey: string) => {
+    setApiKey(newApiKey);
+    if (newApiKey.trim()) {
+      localStorage.setItem("cerebras-api-key", newApiKey.trim());
+      showToast("API key saved successfully!", "success");
+    } else {
+      localStorage.removeItem("cerebras-api-key");
+    }
+  };
 
   const handleSubmit = async (question: string) => {
+    // Check if API key is available
+    if (!apiKey.trim()) {
+      showToast("Please enter your Cerebras API key in settings to generate physics animations.", "error");
+      setShowSettings(true);
+      return;
+    }
+
     // Hide sample questions after first submit
     setShowSampleQuestions(false);
     // Close sidebar on mobile after submit
@@ -69,7 +119,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({ question, apiKey }),
       });
 
       if (!res.ok) {
@@ -81,6 +131,9 @@ export default function Home() {
 
       const data = await res.json();
       setResponse(data);
+
+      // Show success toast
+      showToast("Physics animation generated successfully! 🎉", "success");
 
       // Update loading message to success
       setChatMessages((prev) =>
@@ -98,6 +151,14 @@ export default function Home() {
       const errorMessage =
         err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
+
+      // Show toast for error
+      if (errorMessage.toLowerCase().includes("api key")) {
+        showToast("Invalid or missing API key. Please check your settings.", "error");
+        setShowSettings(true);
+      } else {
+        showToast(`Error: ${errorMessage}`, "error");
+      }
 
       // Update loading message to error
       setChatMessages((prev) =>
@@ -144,11 +205,25 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col">
-      <Header setShowCreator={setShowCreator} />
+      <Header 
+        setShowCreator={setShowCreator} 
+        onSettingsClick={() => setShowSettings(true)}
+        hasApiKey={!!apiKey.trim()}
+      />
 
       {!response && !loading ? (
         // Default Chat Interface View - Mobile: Full screen, Desktop: Split view
-        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+          {/* Mobile Settings Button - Only when no response and no API key */}
+          {!apiKey.trim() && (
+            <button
+              onClick={() => setShowSettings(true)}
+              className="lg:hidden fixed top-20 right-4 z-50 p-2 bg-secondary text-secondary-foreground rounded-full shadow-lg"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
+          )}
+
           {/* Chat Interface */}
           <main className="max-w-md w-full flex-1 lg:w-80 xl:w-96 flex items-center justify-center p-4 bg-muted lg:border-r lg:border-border">
             <div className="w-full max-w-2xl lg:max-w-none p-6">
@@ -166,7 +241,7 @@ export default function Home() {
 
           {/* Desktop Preview Area - Hidden on mobile */}
           <aside className="hidden lg:flex flex-1 bg-background relative overflow-hidden">
-            <div className="relative h-full w-full flex items-center justify-center">
+            <div className="relative h-full w-full flex flex-col">
               {/* Background Grid Pattern */}
               <div className="absolute inset-0">
                 <svg
@@ -198,35 +273,45 @@ export default function Home() {
                 </svg>
               </div>
 
-              {/* Preview Placeholder Content */}
-              <div className="relative z-10 text-center max-w-lg mx-auto px-8">
-                <div className="mb-8">
-                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <div className="w-8 h-8 bg-primary/20 rounded-full animate-pulse"></div>
+              {/* Preview Placeholder Content - Center */}
+              <div className="relative z-10 flex-1 flex items-center justify-center px-8">
+                <div className="text-center max-w-lg mx-auto">
+                  <div className="mb-8">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <div className="w-8 h-8 bg-primary/20 rounded-full animate-pulse"></div>
+                    </div>
+                    <h2 className="text-2xl font-semibold mb-4 text-foreground">
+                      Physics Preview
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Your physics animation will appear here after you submit a
+                      question. Try one of the sample questions to get started!
+                    </p>
                   </div>
-                  <h2 className="text-2xl font-semibold mb-4 text-foreground">
-                    Physics Preview
-                  </h2>
-                  <p className="text-muted-foreground leading-relaxed">
-                    Your physics animation will appear here after you submit a
-                    question. Try one of the sample questions to get started!
-                  </p>
-                </div>
-
-                {/* Floating Physics Elements */}
-                <div className="absolute inset-0 pointer-events-none">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="absolute w-1 h-1 bg-primary/20 rounded-full animate-physics-float"
-                      style={{
-                        top: `${20 + Math.random() * 60}%`,
-                        left: `${10 + Math.random() * 80}%`,
-                        animationDuration: `${8 + Math.random() * 12}s`,
-                        animationDelay: `${Math.random() * 5}s`,
-                      }}
-                    ></div>
-                  ))}
+                  {/* API Key Settings - Only show if no API key */}
+                  {!apiKey.trim() && (
+                    <div className="relative z-10 p-6">
+                      <ApiKeySettings
+                        apiKey={apiKey}
+                        onApiKeyChange={handleApiKeyChange}
+                      />
+                    </div>
+                  )}
+                  {/* Floating Physics Elements */}
+                  <div className="absolute inset-0 pointer-events-none">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-1 h-1 bg-primary/20 rounded-full animate-physics-float"
+                        style={{
+                          top: `${20 + Math.random() * 60}%`,
+                          left: `${10 + Math.random() * 80}%`,
+                          animationDuration: `${8 + Math.random() * 12}s`,
+                          animationDelay: `${Math.random() * 5}s`,
+                        }}
+                      ></div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -333,8 +418,8 @@ export default function Home() {
                 <div className="relative z-10 text-center max-w-lg mx-auto px-8">
                   <div className="mb-8">
                     {/* <div className="w-16 h-16 bg-primary/10 rounded-full flex flex-col items-center justify-center mx-auto mb-4"> */}
-                      {/* Animated loading dots */}
-                    
+                    {/* Animated loading dots */}
+
                     <h2 className="text-2xl font-semibold mb-4 text-foreground">
                       Generating Physics Animation...
                     </h2>
@@ -342,9 +427,8 @@ export default function Home() {
                       AI is analyzing your physics scenario and creating an
                       interactive simulation.
                     </p>
-                   <div className="flex justify-center items-center">
-
-                   <div className="flex space-x-2 mt-2 text-center justify-center items-center ">
+                    <div className="flex justify-center items-center">
+                      <div className="flex space-x-2 mt-2 text-center justify-center items-center ">
                         {[0, 1, 2, 3, 4].map((i) => (
                           <span
                             key={i}
@@ -355,15 +439,22 @@ export default function Home() {
                             }}
                           />
                         ))}
-                      {/* </div> */}
+                        {/* </div> */}
+                      </div>
                     </div>
-                   </div>
-                   
+
                     {/* Loading dots animation keyframes */}
                     <style jsx>{`
                       @keyframes loading-bounce {
-                        0%, 100% { transform: translateY(0); opacity: 0.7; }
-                        50% { transform: translateY(-8px); opacity: 1; }
+                        0%,
+                        100% {
+                          transform: translateY(0);
+                          opacity: 0.7;
+                        }
+                        50% {
+                          transform: translateY(-8px);
+                          opacity: 1;
+                        }
                       }
                     `}</style>
                   </div>
@@ -373,6 +464,22 @@ export default function Home() {
           </main>
         </div>
       )}
+
+      {/* Settings Dialog */}
+      <SettingsDialog
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        apiKey={apiKey}
+        onApiKeyChange={handleApiKeyChange}
+      />
+
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
     </div>
   );
 }
