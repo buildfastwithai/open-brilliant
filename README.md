@@ -76,7 +76,3 @@ You can set your Cerebras API key in two ways:
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
