@@ -55,6 +55,7 @@ export default function PhysicsQuestionForm({
 }: PhysicsQuestionFormProps) {
   const [question, setQuestion] = useState(selectedQuestion);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   // Update local state when selectedQuestion prop changes
   useEffect(() => {
@@ -63,9 +64,42 @@ export default function PhysicsQuestionForm({
 
   // Auto-scroll to bottom when new messages are added
   useEffect(() => {
-    if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
-    }
+    // Use setTimeout to ensure DOM is updated before scrolling
+    const scrollToBottom = () => {
+      // Try multiple approaches to find the scrollable element
+      let scrollElement: HTMLElement | null = null;
+      
+      // First try to find the Radix ScrollArea viewport
+      if (scrollAreaRef.current) {
+        scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+      }
+      
+      // Fallback to the chatScrollRef
+      if (!scrollElement && chatScrollRef.current) {
+        scrollElement = chatScrollRef.current;
+      }
+      
+      // Final fallback - look for any scrollable element in the chat area
+      if (!scrollElement) {
+        const chatContainer = document.querySelector('[data-slot="scroll-area-viewport"]') as HTMLElement;
+        if (chatContainer) {
+          scrollElement = chatContainer;
+        }
+      }
+      
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
+      
+      // Additional fallback: scroll the last message into view
+      const lastMessage = document.querySelector('[data-message]:last-child');
+      if (lastMessage) {
+        lastMessage.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    };
+    
+    // Small delay to ensure the new message is rendered
+    setTimeout(scrollToBottom, 100);
   }, [chatMessages]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -97,11 +131,12 @@ export default function PhysicsQuestionForm({
       {/* Chat Messages */}
       {chatMessages.length > 0 && (
         <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full" ref={chatScrollRef}>
-            <div className="space-y-4 pb-4">
+          <ScrollArea className="h-full" ref={scrollAreaRef}>
+            <div className="space-y-4 pb-4" ref={chatScrollRef}>
               {chatMessages.map((message) => (
                 <div
                   key={message.id}
+                  data-message
                   className={`flex ${
                     message.type === "user" ? "justify-end" : "justify-start"
                   }`}

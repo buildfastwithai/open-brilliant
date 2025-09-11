@@ -1,6 +1,6 @@
 "use client";
 
-import IframeDebug from "./IframeDebug";
+
 
 interface PhysicsResponse {
   analysis: string;

@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import {  Menu, X } from "lucide-react";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import LandingPage from "@/components/LandingPage";
 import PhysicsQuestionForm from "@/components/PhysicsQuestionForm";
 import PhysicsResponse from "@/components/PhysicsResponse";
-import SkeletonLoader from "@/components/SkeletonLoader";
-import SampleQuestionsSection from "@/components/SampleQuestionsSection";
 
 interface PhysicsResponse {
   analysis: string;
@@ -335,9 +332,9 @@ export default function Home() {
                 {/* Loading Content */}
                 <div className="relative z-10 text-center max-w-lg mx-auto px-8">
                   <div className="mb-8">
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <div className="w-8 h-8 bg-primary/20 rounded-full animate-spin"></div>
-                    </div>
+                    {/* <div className="w-16 h-16 bg-primary/10 rounded-full flex flex-col items-center justify-center mx-auto mb-4"> */}
+                      {/* Animated loading dots */}
+                    
                     <h2 className="text-2xl font-semibold mb-4 text-foreground">
                       Generating Physics Animation...
                     </h2>
@@ -345,6 +342,30 @@ export default function Home() {
                       AI is analyzing your physics scenario and creating an
                       interactive simulation.
                     </p>
+                   <div className="flex justify-center items-center">
+
+                   <div className="flex space-x-2 mt-2 text-center justify-center items-center ">
+                        {[0, 1, 2, 3, 4].map((i) => (
+                          <span
+                            key={i}
+                            className="w-2.5 h-2.5 bg-primary/60 rounded-full inline-block"
+                            style={{
+                              animation: `loading-bounce 1s infinite`,
+                              animationDelay: `${i * 0.15}s`,
+                            }}
+                          />
+                        ))}
+                      {/* </div> */}
+                    </div>
+                   </div>
+                   
+                    {/* Loading dots animation keyframes */}
+                    <style jsx>{`
+                      @keyframes loading-bounce {
+                        0%, 100% { transform: translateY(0); opacity: 0.7; }
+                        50% { transform: translateY(-8px); opacity: 1; }
+                      }
+                    `}</style>
                   </div>
                 </div>
               </div>

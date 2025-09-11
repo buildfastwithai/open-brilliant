@@ -13,7 +13,7 @@ THINK DEEPLY AND WORK IN THESE STEPS:
 
 You MUST return ONLY valid JSON with this structure:
 {
-  "analysis": "Brief explanation of the physics concept with key formulas",
+  "analysis": "Comprehensive deep physics analysis with detailed mathematical derivations, assumptions, and limitations"
   "solution": "Step-by-step solution approach following the 3-step process above", 
   "code": "Complete HTML code with animation",
   "concepts": ["physics", "concepts"]
@@ -195,28 +195,60 @@ HTML STRUCTURE:
 </div>
 \`\`\`
 
-ANIMATION REQUIREMENTS:
-1. Canvas should be 900x450px with light gradient background (NOT white)
+ENHANCED ANIMATION UI REQUIREMENTS:
+1. Canvas should be 900x450px with sophisticated gradient background and visual depth
 2. Use modern, clean styling with proper spacing and colorful backgrounds
 3. Each grid area should have distinct styling and clear boundaries
 4. Include working parameter controls with real-time updates
-5. Show real-time physics data and calculations
+5. Show real-time physics data and calculations with beautiful typography
 6. Use time variable for smooth animations (time += 0.016 each frame)
 7. Auto-start animation when loaded
 8. Controls should be prominently displayed at the bottom center
 9. Parameters should have colorful styling (pink theme)
 10. Data area should have distinct styling (yellow theme)
-11. CANVAS BACKGROUND: Use subtle gradient, NOT plain white - make it visually appealing
-12. Add colorful physics objects with gradients and shadows for visual appeal
-13. Use bright, vibrant colors for all physics elements (balls, objects, particles)
-14. Make animations smooth and visually engaging with particle effects when possible
+11. CANVAS BACKGROUND: Use sophisticated gradient with subtle patterns, NOT plain white
+12. Add premium physics objects with advanced visual effects:
+    - Multi-layered gradients with radial and linear combinations
+    - Dynamic shadows that change with object movement
+    - Glowing effects using box-shadow and filter properties
+    - Particle trails and motion blur effects
+    - 3D-like depth using multiple shadow layers
+    - Smooth color transitions and hue shifts
+13. Use vibrant, saturated colors with complementary color schemes
+14. Implement advanced visual effects:
+    - Particle systems with varying sizes and opacities
+    - Trail effects using canvas composite operations
+    - Dynamic lighting effects with gradient overlays
+    - Smooth easing functions for natural motion
+    - Visual feedback for interactions (ripples, pulses)
+    - Animated backgrounds with subtle movement
+    - Glow effects on active elements
+    - Smooth transitions between states
+
+PREMIUM ANIMATION VISUAL EFFECTS:
+- Use multiple canvas layers for depth (background, objects, effects, UI)
+- Implement particle systems with physics-based behavior
+- Add motion blur effects for fast-moving objects
+- Create dynamic lighting with radial gradients
+- Use advanced color blending modes (multiply, overlay, screen)
+- Implement smooth camera movements and zoom effects
+- Add visual feedback for all user interactions
+- Create atmospheric effects (fog, dust, light rays)
+- Use advanced shadow techniques (multiple shadow layers)
+- Implement smooth color transitions and hue animations
+- Add subtle background animations (floating particles, ambient movement)
+- Create depth perception with size and opacity variations
+- Use advanced typography with shadows and gradients for data display
 
 CRITICAL ANIMATION RULES:
-- The draw() function MUST contain moving objects
-- Show relevant physics objects (not just dots)
-- Display real-time calculations in the data-area
-- All interactive elements must be functional
+- The draw() function MUST contain moving objects with premium visual effects
+- Show relevant physics objects with sophisticated rendering (not just basic shapes)
+- Display real-time calculations in the data-area with beautiful typography
+- All interactive elements must be functional with visual feedback
 - Each grid area must be clearly defined and styled
+- Implement smooth 60fps animations with proper frame timing
+- Use advanced canvas techniques for professional visual quality
+- Add visual polish to every element (shadows, gradients, effects)
 
 UI GUIDELINES - FOLLOW EXACTLY (NO VARIATIONS ALLOWED):
 - Use the EXACT CSS template provided - DO NOT modify button sizes, colors, or layout
@@ -289,10 +321,22 @@ STEP 3 - IMPLEMENT:
 - Controls go in controls-area (top-right)
 - Parameters go in parameters-area (middle-right)
 - Data/graphs go in data-area (bottom-right)
-- Include real-time calculations and parameter controls
-- Make the physics concepts clear and educational
+- Include real-time calculations and parameter controls with premium visual styling
+- Make the physics concepts clear and educational with sophisticated animations
+- Implement advanced visual effects for professional-quality animations
 
 CRITICAL: Follow the CSS Grid structure exactly - use the provided grid-template-areas.
+
+ENHANCED ANIMATION IMPLEMENTATION:
+- Use advanced canvas rendering techniques for premium visual quality
+- Implement multi-layered visual effects (shadows, glows, particles)
+- Create smooth, natural motion with proper easing functions
+- Add visual feedback for all interactions and state changes
+- Use sophisticated color schemes with gradients and lighting effects
+- Implement particle systems and trail effects where appropriate
+- Create depth and dimension with advanced shadow techniques
+- Add atmospheric effects and ambient animations
+- Use professional typography with visual enhancements for data display
 
 DESIGN CONSISTENCY REQUIREMENTS:
 - Copy the EXACT CSS from the template above - do NOT modify any values
@@ -301,10 +345,11 @@ DESIGN CONSISTENCY REQUIREMENTS:
 - Use the EXACT HTML structure provided - no variations
 - Colors, gradients, and sizes are LOCKED - creativity should be in physics animation only
 - If generated design looks different from template, you are doing it WRONG
+- Focus all creative energy on making the animations visually stunning and professional
 
 IMPORTANT: Return analysis and solution as SINGLE STRING values, not arrays.`,
       schema: physicsSchema,
-      temperature: 0.1,
+      temperature: 0.3,
     });
 
     // Object is already structured and validated by Zod schema
@@ -320,15 +365,14 @@ IMPORTANT: Return analysis and solution as SINGLE STRING values, not arrays.`,
   } catch (error) {
     console.error("API Error:", error);
 
-    // If structured generation fails, return fallback response
-    return NextResponse.json({
-      success: true,
-      analysis:
-        "Unable to generate structured analysis for this physics concept.",
-      solution:
-        "Please try rephrasing your question for a more specific physics concept.",
-      code: ``,
-      concepts: ["general physics"],
-    });
+    // Return proper error response instead of fallback
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    return NextResponse.json(
+      { 
+        error: errorMessage,
+        success: false 
+      },
+      { status: 500 }
+    );
   }
 }
